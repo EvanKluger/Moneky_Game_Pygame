@@ -29,7 +29,11 @@ gameover_x = 450
 gameover_y = 250
 
 BANANA = pygame.transform.scale(BANANA_IMAGE, (80, 40))
+BANANA_2 = pygame.transform.scale(BANANA_IMAGE, (80, 40))
+BANANA_3 = pygame.transform.scale(BANANA_IMAGE, (80, 40))
 TRASH = pygame.transform.scale(TRASH_IMAGE, (80, 40))
+TRASH_2 = pygame.transform.scale(TRASH_IMAGE, (80, 40))
+TRASH_3 = pygame.transform.scale(TRASH_IMAGE, (80, 40))
 MONKEY = pygame.transform.scale(MONKEY_IMAGE, (120, 60))
 JUNGLE = pygame.transform.scale(JUNGLE_IMAGE, (900, 500))
 
@@ -54,6 +58,20 @@ def banana_movement(banana_box):
         banana_box.x = random_coordinate_x()
         banana_box.y = 0 
 
+def banana_movement_2(banana_box_2):
+    if banana_box_2.y < 500:
+        banana_box_2.y = banana_box_2.y + BANANA_VEL + 2
+    else:
+        banana_box_2.x = random_coordinate_x()
+        banana_box_2.y = 0 
+
+def banana_movement_3(banana_box_3):
+    if banana_box_3.y < 500:
+        banana_box_3.y = banana_box_3.y + BANANA_VEL + 3
+    else:
+        banana_box_3.x = random_coordinate_x()
+        banana_box_3.y = 0 
+
 def trash_movement(trash_box):
     if trash_box.y < 500:
         trash_box.y = trash_box.y + TRASH_VEL
@@ -61,7 +79,21 @@ def trash_movement(trash_box):
         trash_box.x = random_coordinate_x()
         trash_box.y = 0
 
-def draw_window(monkey_box, banana_box, trash_box, score_value, score_x, score_y):
+def trash_movement_2(trash_box_2):
+    if trash_box_2.y < 500:
+        trash_box_2.y = trash_box_2.y + TRASH_VEL + 2
+    else:
+        trash_box_2.x = random_coordinate_x()
+        trash_box_2.y = 0
+
+def trash_movement_3(trash_box_3):
+    if trash_box_3.y < 500:
+        trash_box_3.y = trash_box_3.y + TRASH_VEL + 3
+    else:
+        trash_box_3.x = random_coordinate_x()
+        trash_box_3.y = 0
+
+def draw_window(monkey_box, banana_box, trash_box, score_value, score_x, score_y, trash_box_2, banana_box_2, trash_box_3, banana_box_3):
     WIN.fill((204, 255, 255))
     WIN.blit(JUNGLE, (0, 0))
     WIN.blit(MONKEY, (monkey_box.x, monkey_box.y))
@@ -69,19 +101,41 @@ def draw_window(monkey_box, banana_box, trash_box, score_value, score_x, score_y
     WIN.blit(BANANA, (banana_box.x, banana_box.y))
     WIN.blit(TRASH, (trash_box.x, trash_box.y))
     
+    if score_value > 5:
+        add_banana_2(banana_box_2)
+        add_trash_2(trash_box_2)
+    
+    if score_value > 10:
+        add_banana_3(banana_box_3)
+        add_trash_3(trash_box_3)
+    
     score = SCORE_FONT.render('Score : ' + str(score_value), True, (0,0,0))
     WIN.blit(score, (score_x,score_y))
 
     pygame.display.update()
 
+def add_trash_2(trash_box_2):
+    WIN.blit(TRASH_2, (trash_box_2.x, trash_box_2.y))
+
+def add_banana_2(banana_box_2):
+    WIN.blit(BANANA_2, (banana_box_2.x, banana_box_2.y))
+
+def add_trash_3(trash_box_3):
+    WIN.blit(TRASH_3, (trash_box_3.x, trash_box_3.y))
+
+def add_banana_3(banana_box_3):
+    WIN.blit(BANANA_3, (banana_box_3.x, banana_box_3.y))
 
 def main():
     
     score_value = 0
-    count = 0
     monkey_box = pygame.Rect(450, 440, 120, 60)
     banana_box = pygame.Rect(random_coordinate_x(), 0, 80, 40)
     trash_box = pygame.Rect(random_coordinate_x(), 0, 80, 40)
+    banana_box_2 = pygame.Rect(random_coordinate_x(), 0, 80, 40)
+    trash_box_2 = pygame.Rect(random_coordinate_x(), 0, 80, 40)
+    banana_box_3 = pygame.Rect(random_coordinate_x(), 0, 80, 40)
+    trash_box_3 = pygame.Rect(random_coordinate_x(), 0, 80, 40)
     clock = pygame.time.Clock()
     run = True
     
@@ -96,24 +150,37 @@ def main():
         monkey_movement(keys_pressed, monkey_box)
         banana_movement(banana_box)
         trash_movement(trash_box)
-
         
-
-        draw_window(monkey_box, banana_box, trash_box, score_value, score_x, score_y)
+        if score_value > 5:
+            trash_movement_2(trash_box_2)
+            banana_movement_2(banana_box_2)
         
-
+        if score_value > 10:
+            trash_movement_3(trash_box_3)
+            banana_movement_3(banana_box_3)
+        
+        draw_window(monkey_box, banana_box, trash_box, score_value, score_x, score_y, trash_box_2, banana_box_2, trash_box_3, banana_box_3)
+        
+        
         if monkey_box.colliderect(banana_box):
             score_value += 1
-            count += 1
             banana_box.x = random_coordinate_x()
             banana_box.y = 0
-
-        if monkey_box.colliderect(trash_box):
-            gameover = GAMEOVER_FONT.render('GAMEOVER', True, (0,0,0))
-            WIN.blit(gameover, (gameover_x,gameover_y))
-            
-            run = False
         
+        if monkey_box.colliderect(banana_box_2):
+            score_value += 1
+            banana_box_2.x = random_coordinate_x()
+            banana_box_2.y = 0
+
+        if monkey_box.colliderect(banana_box_3):
+            score_value += 1
+            banana_box_3.x = random_coordinate_x()
+            banana_box_3.y = 0
+
+        if monkey_box.colliderect(trash_box) or monkey_box.colliderect(trash_box_2) or monkey_box.colliderect(trash_box_3):
+            gameover = GAMEOVER_FONT.render('GAMEOVER', True, (0,0,0))
+            WIN.blit(gameover, (gameover_x,gameover_y))    
+            run = False
         
 
 
